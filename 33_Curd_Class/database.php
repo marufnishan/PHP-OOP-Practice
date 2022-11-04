@@ -47,9 +47,30 @@ class database{
 	}
 	
 	//Function to update row in database
-	public function update(){
-		
-	}
+	public function update($table,$params=array(),$where= null){
+        if($this->tableExists($table)){
+
+            $args=array();
+            foreach($params as $key=>$value){
+                $args[]="$key ='$value'";
+            }
+            $sql = "UPDATE $table SET " . implode(', ',$args);
+            if($where !=null){
+                $sql.="WHERE $where";
+            }
+            if($this->mysqli->query($sql)){
+                array_push($this->reasult,$this->mysqli->affected_rows);
+                return true;
+            }
+            else{
+                array_push($this->reasult,$this->mysqli->error);
+                return false;
+            }
+        }
+        else{
+            return false;
+        }
+    }
 	
 	//Function to delete table or row(s) in database
 	public function delete(){
